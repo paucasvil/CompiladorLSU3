@@ -216,15 +216,20 @@ public class GenCodigoInt {
             id = cmp.be.preAnalisis;
             emparejar("id");
             emparejar("opasig");
+            
             E(E);
+            
             //Acción Semántica 1
             p = cmp.ts.buscar(id.lexema);
-            if( p!= NIL){
+            
+            if( p!= NIL ){
                 emite( p + ":=" + E.lugar);
             }else{
-                cmp.me.error(Compilador.ERR_CODINT, "[S] Simbolo no encontrado "+id.lexema );
+                cmp.me.error(Compilador.ERR_CODINT, 
+                        "[S] Simbolo no encontrado "+id.lexema );
             }
             //Fin Acción semántica 2
+            
             S();
         } else if ( preAnalisis.equals("si")) {
             // S -> si  K entonces inicio S fin S
