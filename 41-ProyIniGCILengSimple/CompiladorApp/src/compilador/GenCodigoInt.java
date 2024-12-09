@@ -38,6 +38,7 @@
  *:                                 M’-> opmult   F  M’  | ϵ 
  *:                                 F -> id  | num | num.num  |  ( E )  
  *:                                 
+ *:                                 Se implementaron las acciones semánticas de 
  *:-----------------------------------------------------------------------------
  */
 
@@ -67,6 +68,7 @@ public class GenCodigoInt {
 	
     public void generar () {
         consecTemp = 1;
+        consecutivoEtiq = 0;
         preAnalisis = cmp.be.preAnalisis.complex;
         P ();        
     }  
@@ -74,7 +76,7 @@ public class GenCodigoInt {
     //--------------------------------------------------------------------------
 
     private void emite ( String c3d ) {
-        cmp.erroresListener.mostrarCodInt ( c3d );
+        cmp.iuListener.mostrarCodInt ( c3d );
     }
     
     //--------------------------------------------------------------------------
@@ -101,7 +103,7 @@ public class GenCodigoInt {
     }
     
     //--------------------------------------------------------------------------
-    // Metodo para devolver un error al emparejar
+    // Método para devolver un error al emparejar
     //--------------------------------------------------------------------------
  
     private void errorEmparejar(String _token, String _lexema, int numLinea ) {
@@ -134,30 +136,30 @@ public class GenCodigoInt {
     //--------------------------------------------------------------------------
 	
     //--------------------------------------------------------------------------
-    // Metodo para mostrar un error sintactico
+    // Método para mostrar un error sintáctico
  
-    private void error ( String _descripError) {
-        cmp.me.error(cmp.ERR_SINTACTICO, _descripError);
+    private void error ( String _descripError ) {
+        cmp.me.error ( cmp.ERR_SINTACTICO, _descripError );
     }
  
     // Fin de error
-    //--------------------------------------------------------------------------    
+    //------------------------------------------------------------------------------    
     
-    private void P() {
+    private void P () {
         if ( preAnalisis.equals("id")
                 || preAnalisis.equals("inicio")) {
-            //P -> V C 
+            // P -> V C 
             V();
             C();
         } else {
-            error("[P] Inicio incorrecto del programa. "   +
+            error ( "[P] Inicio incorrecto del programa. " +
                     "No. Linea " + cmp.be.preAnalisis.numLinea );
         }
     }
 
     //------------------------------------------------------------------------------
 
-    private void V() {
+    private void V () {
         if ( preAnalisis.equals("id")) {
             //V -> id : T V 
             emparejar("id");
@@ -171,7 +173,7 @@ public class GenCodigoInt {
 
     //------------------------------------------------------------------------------
 
-    private void T() {
+    private void T () {
 
         if ( preAnalisis.equals("caracter")) {
             //T -> caracter
@@ -184,13 +186,13 @@ public class GenCodigoInt {
             emparejar("real");
         } else {
             error("[T] No se encontró tipo de dato. "   +
-                    "No. Linea " + cmp.be.preAnalisis.numLinea );
+                    "No. Línea " + cmp.be.preAnalisis.numLinea );
         }
     }
 
     //------------------------------------------------------------------------------
 
-    private void C() {
+    private void C () {
 
         if ( preAnalisis.equals("inicio")) {
             //C -> inicio S fin
@@ -199,177 +201,386 @@ public class GenCodigoInt {
             emparejar("fin");
         } else {
             error("[C] Se esperaba la palabra reservada inicio. "   +
-                    "No. Linea " + cmp.be.preAnalisis.numLinea );
+                    "No. Línea " + cmp.be.preAnalisis.numLinea );
         }
     }
 
     //------------------------------------------------------------------------------
 
-    private void S() {
+    private void S ( ) {
+        // Variables locales
+        Linea_BE id = new Linea_BE();
         Atributos E = new Atributos();
-        Atributos K = new Atributos();
-        Atributos L = new Atributos();  
-        Linea_BE id = new Linea_BE ();
+        Atributos K = new Atributos();       
+        Atributos L = new Atributos();
+        Atributos S = new Atributos();
+        Atributos J = new Atributos();
         
-        if ( preAnalisis.equals("id")) {            
-            //S -> id := E  S
+        if ( preAnalisis.equals ( "id" ) ) {
+            // S -> id := E { 1 } S
+            
             id = cmp.be.preAnalisis;
-            emparejar("id");
-            emparejar("opasig");
+            emparejar ( "id" );
+            emparejar ( "opasig" );
+            E ( E );
+            //E.lugar = "t3"; // prueba, borrar
             
-            E(E);
+            // Acción Semántica 1
+            p = cmp.ts.buscar ( id.lexema );
             
-            //Acción Semántica 1
-            p = cmp.ts.buscar(id.lexema);
-            
-            if( p!= NIL ){
-                emite( p + ":=" + E.lugar);
-            }else{
-                cmp.me.error(Compilador.ERR_CODINT, 
-                        "[S] Simbolo no encontrado "+id.lexema );
+            if ( p != NIL ) {
+                emite ( id.lexema + " := " + E.lugar );
+            } else {
+                cmp.me.error ( Compilador.ERR_CODINT, "[S] Símbolo " + id.lexema + " no encontrado" );
             }
-            //Fin Acción semántica 2
+            // Fin Acción Semántica 1
             
-            S();
-        } else if ( preAnalisis.equals("si")) {
-            // S -> si  K entonces inicio S fin S
-            emparejar("si");
-            K(K);
-            emparejar("entonces");
-            emparejar("inicio");
-            S();
-            emparejar("fin");
-            L (L);            
-            S();
-        } else if ( preAnalisis.equals("mientras")) {
-            // S -> mientras  K hacer inicio S fin L S
-            emparejar("mientras");
-            K(K);
-            emparejar("hacer");
-            emparejar("inicio");
-            S();
-            emparejar("fin");
             S ();
+        } else if ( preAnalisis.equals ( "si" ) ) {
+            // S -> si  K entonces inicio S fin S
+            
+            emparejar ( "si" );
+            
+            // Acción Semántica 6
+            K.verdadera = etiqnueva();
+            S.siguiente = etiqnueva();
+            J.siguiente = etiqnueva();
+            
+            K.falsa = S.siguiente;
+            // Fin Acción Semántica 6
+            
+            K ( K );
+            emparejar ( "entonces" );
+            emparejar ( "inicio" );
+            
+            // Acción Semántica 7
+            emite ( K.verdadera + ":" );
+            // Fin Acción Semántica 7
+            
+            S ();
+            
+            emite ( "goto " + J.siguiente );
+            // Acción Semántica 8
+            emite ( K.falsa + ":" );
+            // Fin Acción Semántica 8
+            
+            
+            emparejar ( "fin" );
+            L ( L );    
+            
+            // Acción Semántica 9
+            L.h = K.falsa;
+            L.vacio = S.siguiente;
+            // Fin Acción Semántica 9
+            
+            emite (J.siguiente + ":" );
+            
+            S ();
+            
+            
+        } else if ( preAnalisis.equals ( "mientras" ) ) {
+            // S -> mientras  K hacer inicio S fin L S
+            
+            emparejar ( "mientras" );
+            
+            // Acción Semántica 2
+            S.comienzo = etiqnueva();
+            K.verdadera = etiqnueva();
+            S.siguiente = etiqnueva();
+            K.falsa = S.siguiente;
+            emite ( S.comienzo + ":" );
+            // Fin Acción Semántica 2
+            
+            K ( K );
+            emparejar ( "hacer" );
+            emparejar ( "inicio" );
+            
+            // Acción Semántica 3
+            emite ( K.verdadera + ":" );
+            // Fin Acción Semántica 3
+            
+            S ();
+            
+            // Acción Semántica 4
+            emite ( "goto" + S.comienzo );
+            emite ( K.falsa + ":" );
+            // Fin Acción Semántica 4
+            
+            emparejar ( "fin" );
+            S ();
+            
         } else {
-            //S -> EMPTY
+            // S -> EMPTY 
+            
+            // Acción Semántica 26
+            S.siguiente = S.h;
+            // Fin Acción Semántica 26
         }
     }
 
     //------------------------------------------------------------------------
     
-    private void L (Atributos L) {
-        
+    private void L ( Atributos L ) {
         if ( preAnalisis.equals ( "sino" ) ) {
             // L -> sino inicio S fin
+            
             emparejar ( "sino" );
             emparejar ( "inicio" );
+            
+            // Acción Semántica 10
+            //emite ( L.siguiente + ":" );
+            // Fin Acción Semántica 10
+            
             S ();
             emparejar ( "fin" );
         } else {
             // L -> empty
+            
+            // Acción Semántica 11
+            L.siguiente = L.h;
+            // Fin Acción Semántica 11
         }
     }
     
     //------------------------------------------------------------------------
 
-    private void K(Atributos K) {
-        if ( preAnalisis.equals("num" )
-                || preAnalisis.equals("num.num" )
-                || preAnalisis.equals("id")
-                || preAnalisis.equals("(") ) {
+    private void K ( Atributos K ) {
+        // Variables locales
+        Atributos E1 = new Atributos();
+        Atributos E2 = new Atributos();
+        Linea_BE oprel = new Linea_BE();
+        
+        if ( preAnalisis.equals("num" ) || preAnalisis.equals("num.num" )
+             || preAnalisis.equals("id") || preAnalisis.equals("(") ) {
+            
             // K -> E oprel E 
-            E();
+            E ( E1 );
+            oprel = cmp.be.preAnalisis;
             emparejar("oprel");
-            E();
+            E ( E2 );
+            
+            // Acción Semántica 5
+            emite ( "if" + E1.lugar + oprel.lexema + E2.lugar + "goto" + K.verdadera );
+            emite ( "goto" + K.falsa );
+            // Fin Acción Semántica 5
+            
         } else {
-            error("[K] Se esperaba el inicio de una expresion. "   +
-                    "No. Linea " + cmp.be.preAnalisis.numLinea );
+            error("[K] Se esperaba el inicio de una expresión. "   +
+                    "No. Línea " + cmp.be.preAnalisis.numLinea );
         }
     }
 
     //------------------------------------------------------------------------------
     
-    private void E (Atributos E) {
-        if ( preAnalisis.equals ( "id" ) ||
-             preAnalisis.equals ( "num" ) || 
-             preAnalisis.equals ( "num.num" ) ||
-             preAnalisis.equals ( "(" ) ) {
-            // E -> M  E’
-            M  ();
-            Ep ();
+    private void E ( Atributos E ) {
+        // Variables locales
+        Atributos M = new Atributos();
+        Atributos Ep = new Atributos();
+        Polaca expr = new Polaca();
+        String exprInfija = "";
+        String exprPrefija = "";
+        
+        if ( preAnalisis.equals ( "id" ) || preAnalisis.equals ( "num" ) || 
+             preAnalisis.equals ( "num.num" ) || preAnalisis.equals ( "(" ) ) {
+            
+            // E -> M E’
+            
+            M ( M );
+            
+            // Acción Semántica 12
+            Ep.h = M.lugar;
+            // Fin Acción Semántica 12
+
+            Ep ( Ep );
+            
+            // Acción Semántica 13
+            exprPrefija = expr.notacionPolaca ( exprInfija );
+            E.lugar = Ep.h;
+            //emite( E.lugar + " := " + Ep.h);
+            // Fin Acción Semántica 13
         }   
         else {
-            error ( "[E] Se esperaba el inicio de una expresion. "   +
-                    "No. Linea " + cmp.be.preAnalisis.numLinea );
+            error ( "[E] Se esperaba el inicio de una expresión. "   +
+                    "No. Línea " + cmp.be.preAnalisis.numLinea );
         }
     }
 
     //------------------------------------------------------------------------------
     // E’-> opsuma M  E’  | ϵ 
     
-    private void Ep (Atributos Ep) {
+    private void Ep ( Atributos Ep ) {
+        // Variables locales
+        Atributos M = new Atributos();
+        Atributos Ep1 = new Atributos();
+        Linea_BE opsum = new Linea_BE();
+        
         if ( preAnalisis.equals ( "opsuma" ) ) {
           // E’-> opsuma M  E’
+          opsum = cmp.be.preAnalisis;
           emparejar ( "opsuma" );
-          M ();
-          Ep ();
+          M ( M );
+          // Acción Semántica 16
+          Ep1.h = tempnuevo();
+          emite ( Ep1.h + " := " + Ep.h + opsum.lexema + M.lugar );
+          cmp.cua.insertar(new Cuadruplo ( opsum.lexema, Ep.h, M.lugar, Ep1.h ) );
+          // Fin Acción Semántica 16
+          
+          // Acción Semántica 17
+          Ep.lugar = Ep1.lugar;
+          Ep.h = Ep1.h;
+          // Fin Acción Semántica 17
+          
+          Ep ( Ep );
+          
         } else {
             // E' -> ϵ 
+            
+            // Acción Semántica 18
+            Ep.lugar = Ep.h;
+            // Fin Acción Semántica 18
         }   
     }    
 
     //------------------------------------------------------------------------------
     // M -> F  M’ 
     
-    private void M () {
+    private void M ( Atributos M ) {
+        // Variables locales
+        Atributos F = new Atributos();
+        Atributos Mp = new Atributos();
+        Polaca expr = new Polaca();
+        String exprPrefija = "";
+        String exprInfija = "";
+        
         if ( preAnalisis.equals ( "id" ) ||
              preAnalisis.equals ( "num" ) || 
              preAnalisis.equals ( "num.num" ) ||
              preAnalisis.equals ( "(" ) ) {
             // M -> F  M’ 
-            F ();
-            Mp ();
+            
+            F ( F );
+             
+            // Acción Semántica 14
+            Mp.h = F.lugar;
+            // Fin Acción Semántica 14
+            
+            Mp ( Mp );
+            
+            // Acción Semántica 15
+            exprPrefija = expr.notacionPolaca ( exprInfija );
+            M.lugar = Mp.h;
+            //emite(M.lugar + " := " + Mp.h);
+            // Fin Acción Semántica 15
+            
         } else {
-            error ( "[M] Se esperaba el termino de una expresion. "  +
-                    "No. Linea " + cmp.be.preAnalisis.numLinea );
+            error ( "[M] Se esperaba el termino de una expresión. "  +
+                    "No. Línea " + cmp.be.preAnalisis.numLinea );
         }     
     }
     
     //------------------------------------------------------------------------------    
-    // M’-> opmult   F  M’  | ϵ 
+    // M’ -> opmult   F  M’  | ϵ 
     
-    private void Mp (Atributos Mp) {
+    private void Mp ( Atributos Mp ) {
+        // Variables locales
+        Atributos F = new Atributos();
+        Atributos Mp1 = new Atributos();
+        Linea_BE opmult = new Linea_BE();
+        
         if ( preAnalisis.equals ( "opmult" ) ) {
           // M’-> opmult   F  M’
+          opmult = cmp.be.preAnalisis;
           emparejar ( "opmult" );
-          F  ();
-          Mp ();
+          F ( F );
+          
+          // Acción Semántica 19
+          Mp1.h = tempnuevo();
+          emite ( Mp1.h + " := " + Mp.h + opmult.lexema + F.lugar );
+          cmp.cua.insertar(new Cuadruplo ( opmult.lexema, Mp.h, F.lugar, Mp1.h ) );
+          // Fin Acción Semántica 19
+          
+          // Acción Semántica 20
+          Mp.h = Mp1.h;
+          // Fin Acción Semántica 20
+          
+          Mp ( Mp );
         } else {
             // M' -> ϵ 
+            
+            // Acción Semántica 21
+            Mp.lugar = Mp.h;
+            // Fin Acción Semántica 21
         }         
     }
     
     //------------------------------------------------------------------------------
     // F -> id  | num | num.num  |  ( E )
     
-    private void F (Atributos F) {
+    private void F ( Atributos F ) {
+        // Variables locales
+        Atributos E = new Atributos();
+        Linea_BE id = new Linea_BE();
+        Linea_BE num = new Linea_BE();
+        Linea_BE num_num = new Linea_BE();
+        
         if ( preAnalisis.equals("num")) {
             // F -> num
+            num = cmp.be.preAnalisis;
             emparejar ("num");
+            
+            // Acción Semántica 23
+            p = cmp.ts.buscar ( num.lexema );
+            
+            if ( p != NIL ) {
+                F.lugar = num.lexema;
+            } else {
+                error ( "[F] Id redeclarado" );
+            }
+            // Fin Acción Semántica 23
+            
         } else if ( preAnalisis.equals("num.num")) {
             // F -> num.num
+            num_num = cmp.be.preAnalisis;
             emparejar ("num.num");
+            
+            // Acción Semántica 24
+            p = cmp.ts.buscar ( num_num.lexema );
+            
+            if ( p != NIL ) {
+                F.lugar = num_num.lexema;
+            } else {
+                error ( "[F] Id redeclarado" );
+            }
+            // Fin Acción Semántica 24
+            
         } else if ( preAnalisis.equals("id")) {
             // F -> id
+            id = cmp.be.preAnalisis;
             emparejar("id");
+            
+            // Acción Semántica 22
+            p = cmp.ts.buscar ( id.lexema );
+            
+            if ( p != NIL ) {
+                F.lugar = id.lexema;
+            } else {
+                error ( "[F] Id redeclarado" );
+            }
+            // Fin Acción Semántica 22
+            
         } else if ( preAnalisis.equals("(") ) {
             // F -> ( E )
             emparejar("(");
-            E ();
+            E ( E );
             emparejar(")");
+            
+            // Acción Semántica 25
+            F.lugar = E.lugar;
+            // Fin Acción Semántica 25
+            
         } else {
-            error("[F] Expresion mal formada. " +
-                    "No. Linea " + cmp.be.preAnalisis.numLinea );
+            error("[F] Expresión mal formada. " +
+                  "No. Línea " + cmp.be.preAnalisis.numLinea );
         }
     }
 

@@ -6,5 +6,7 @@ public class Atributos {
     String siguiente= "";
     String verdadera= "";
     String falsa    = "";
+    String h = "";
+    String vacio = "";
                    
 }
