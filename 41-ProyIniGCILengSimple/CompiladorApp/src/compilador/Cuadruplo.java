@@ -11,4 +11,20 @@ public class Cuadruplo {
         this.arg2 = arg2;
         this.resultado = resultado;
     }
+
+    public String getOp() {
+        return op;
+    }
+
+    public String getArg1() {
+        return arg1;
+    }
+
+    public String getArg2() {
+        return arg2;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
 }

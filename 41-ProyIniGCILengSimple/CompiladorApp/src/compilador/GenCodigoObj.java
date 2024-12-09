@@ -59,8 +59,10 @@ public class GenCodigoObj {
     private void genEncabezadoASM () {
         cmp.iuListener.mostrarCodObj ( "TITLE CodigoObjeto ( codigoObjeto.asm )"  );
         cmp.iuListener.mostrarCodObj ( "; Descripción del programa: Automatas II" );
-        cmp.iuListener.mostrarCodObj ( "; Fecha de creacion: Ene-Jun/2023"        );
+        cmp.iuListener.mostrarCodObj ( "; Fecha de creacion: Ago-Dic/2024"        );
         cmp.iuListener.mostrarCodObj ( "; Revisiones:" );
+        cmp.iuListener.mostrarCodObj ( "; Autores: Paulina Castañeda (21130850)" );
+        cmp.iuListener.mostrarCodObj ( ";          Layla González    (21130868)" );
         cmp.iuListener.mostrarCodObj ( "; Fecha de ult. modificacion:" );
         cmp.iuListener.mostrarCodObj ( "" );
         cmp.iuListener.mostrarCodObj ( "; INCLUDE Irvine32.inc" );
@@ -120,9 +122,21 @@ public class GenCodigoObj {
     
     //--------------------------------------------------------------------------
     // Algoritmo de generacion de codigo en ensamblador
-    
-    private void algoritmoGCO () {
-        
+    // Aqui se implementa la traducción de cada cuadruplo en su equivalente en
+    // lenguaje ensamblador.
+    private void algoritmoGCO () {       
+        for(int i = 0; i < cmp.cua.getTamano(); i++){
+            Cuadruplo cuas = cmp.cua.devolverCuadruplo(i);
+            System.out.println(cuas.op);
+            String op = cuas.getOp();
+            cmp.iuListener.mostrarCodObj ( "mov ax, "+cuas.getArg1() );
+            if(cuas.getOp().equals("+")){
+                cmp.iuListener.mostrarCodObj ( "add ax, "+cuas.getArg2() );
+            }else if(cuas.getOp().equals("*")){
+                cmp.iuListener.mostrarCodObj ( "mul "+cuas.getArg2() );
+            }
+            cmp.iuListener.mostrarCodObj ( "mov "+cuas.getResultado() +", ax");
+        }
     }
     
     //--------------------------------------------------------------------------

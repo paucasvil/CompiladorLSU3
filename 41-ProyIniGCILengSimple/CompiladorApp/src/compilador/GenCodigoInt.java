@@ -210,6 +210,7 @@ public class GenCodigoInt {
     private void S ( ) {
         // Variables locales
         Linea_BE id = new Linea_BE();
+        Linea_BE opasig = new Linea_BE();
         Atributos E = new Atributos();
         Atributos K = new Atributos();       
         Atributos L = new Atributos();
@@ -221,6 +222,7 @@ public class GenCodigoInt {
             
             id = cmp.be.preAnalisis;
             emparejar ( "id" );
+            opasig = cmp.be.preAnalisis;
             emparejar ( "opasig" );
             E ( E );
             //E.lugar = "t3"; // prueba, borrar
@@ -230,6 +232,7 @@ public class GenCodigoInt {
             
             if ( p != NIL ) {
                 emite ( id.lexema + " := " + E.lugar );
+                cmp.cua.insertar(new Cuadruplo ( opasig.lexema, E.lugar, "", id.lexema ) );
             } else {
                 cmp.me.error ( Compilador.ERR_CODINT, "[S] Símbolo " + id.lexema + " no encontrado" );
             }
