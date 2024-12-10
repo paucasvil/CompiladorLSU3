@@ -1,6 +1,7 @@
 package principal;
 
 import gui.CompiladorFrame;
+import gui.AcercadeDialog;
 import compilador.Compilador;
 
 public class Main {
@@ -33,7 +34,10 @@ public class Main {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new CompiladorFrame ( new Compilador () ).setVisible ( true );
+                CompiladorFrame frame = new CompiladorFrame(new Compilador());
+                frame.setVisible(true);
+                frame.setColaboradoresAcercaDe(new String[]{" Paulina Jaqueline Castañeda Villalobos (21130850) ", 
+                    " Layla Vanessa González Martínez (21130868) "});
             }
         });
         

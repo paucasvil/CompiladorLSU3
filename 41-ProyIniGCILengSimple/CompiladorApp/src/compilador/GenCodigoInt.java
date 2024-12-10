@@ -262,8 +262,9 @@ public class GenCodigoInt {
             
             S ();
             
-            emite ( "goto " + J.siguiente );
+            
             // Acción Semántica 8
+            emite ( "goto " + J.siguiente );
             emite ( K.falsa + ":" );
             // Fin Acción Semántica 8
             
@@ -274,9 +275,8 @@ public class GenCodigoInt {
             // Acción Semántica 9
             L.h = K.falsa;
             L.vacio = S.siguiente;
-            // Fin Acción Semántica 9
-            
             emite (J.siguiente + ":" );
+            // Fin Acción Semántica 9
             
             S ();
             
@@ -315,9 +315,9 @@ public class GenCodigoInt {
         } else {
             // S -> EMPTY 
             
-            // Acción Semántica 26
+            // Acción Semántica 25
             S.siguiente = S.h;
-            // Fin Acción Semántica 26
+            // Fin Acción Semántica 25
         }
     }
 
@@ -328,20 +328,16 @@ public class GenCodigoInt {
             // L -> sino inicio S fin
             
             emparejar ( "sino" );
-            emparejar ( "inicio" );
-            
-            // Acción Semántica 10
-            //emite ( L.siguiente + ":" );
-            // Fin Acción Semántica 10
-            
+            emparejar ( "inicio" );                        
             S ();
             emparejar ( "fin" );
+            
         } else {
             // L -> empty
             
-            // Acción Semántica 11
+            // Acción Semántica 10
             L.siguiente = L.h;
-            // Fin Acción Semántica 11
+            // Fin Acción Semántica 10
         }
     }
     
@@ -379,9 +375,6 @@ public class GenCodigoInt {
         // Variables locales
         Atributos M = new Atributos();
         Atributos Ep = new Atributos();
-        Polaca expr = new Polaca();
-        String exprInfija = "";
-        String exprPrefija = "";
         
         if ( preAnalisis.equals ( "id" ) || preAnalisis.equals ( "num" ) || 
              preAnalisis.equals ( "num.num" ) || preAnalisis.equals ( "(" ) ) {
@@ -390,17 +383,15 @@ public class GenCodigoInt {
             
             M ( M );
             
-            // Acción Semántica 12
+            // Acción Semántica 11
             Ep.h = M.lugar;
-            // Fin Acción Semántica 12
+            // Fin Acción Semántica 11
 
             Ep ( Ep );
             
-            // Acción Semántica 13
-            exprPrefija = expr.notacionPolaca ( exprInfija );
+            // Acción Semántica 12
             E.lugar = Ep.h;
-            //emite( E.lugar + " := " + Ep.h);
-            // Fin Acción Semántica 13
+            // Fin Acción Semántica 12
         }   
         else {
             error ( "[E] Se esperaba el inicio de una expresión. "   +
@@ -422,25 +413,25 @@ public class GenCodigoInt {
           opsum = cmp.be.preAnalisis;
           emparejar ( "opsuma" );
           M ( M );
-          // Acción Semántica 16
+          // Acción Semántica 15
           Ep1.h = tempnuevo();
           emite ( Ep1.h + " := " + Ep.h + opsum.lexema + M.lugar );
           cmp.cua.insertar(new Cuadruplo ( opsum.lexema, Ep.h, M.lugar, Ep1.h ) );
-          // Fin Acción Semántica 16
+          // Fin Acción Semántica 15
           
-          // Acción Semántica 17
+          // Acción Semántica 16
           Ep.lugar = Ep1.lugar;
           Ep.h = Ep1.h;
-          // Fin Acción Semántica 17
+          // Fin Acción Semántica 16
           
           Ep ( Ep );
           
         } else {
             // E' -> ϵ 
             
-            // Acción Semántica 18
+            // Acción Semántica 17
             Ep.lugar = Ep.h;
-            // Fin Acción Semántica 18
+            // Fin Acción Semántica 17
         }   
     }    
 
@@ -451,9 +442,6 @@ public class GenCodigoInt {
         // Variables locales
         Atributos F = new Atributos();
         Atributos Mp = new Atributos();
-        Polaca expr = new Polaca();
-        String exprPrefija = "";
-        String exprInfija = "";
         
         if ( preAnalisis.equals ( "id" ) ||
              preAnalisis.equals ( "num" ) || 
@@ -463,17 +451,15 @@ public class GenCodigoInt {
             
             F ( F );
              
-            // Acción Semántica 14
+            // Acción Semántica 13
             Mp.h = F.lugar;
-            // Fin Acción Semántica 14
+            // Fin Acción Semántica 13
             
             Mp ( Mp );
             
-            // Acción Semántica 15
-            exprPrefija = expr.notacionPolaca ( exprInfija );
+            // Acción Semántica 14
             M.lugar = Mp.h;
-            //emite(M.lugar + " := " + Mp.h);
-            // Fin Acción Semántica 15
+            // Fin Acción Semántica 14
             
         } else {
             error ( "[M] Se esperaba el termino de una expresión. "  +
@@ -496,23 +482,23 @@ public class GenCodigoInt {
           emparejar ( "opmult" );
           F ( F );
           
-          // Acción Semántica 19
+          // Acción Semántica 18
           Mp1.h = tempnuevo();
           emite ( Mp1.h + " := " + Mp.h + opmult.lexema + F.lugar );
           cmp.cua.insertar(new Cuadruplo ( opmult.lexema, Mp.h, F.lugar, Mp1.h ) );
-          // Fin Acción Semántica 19
+          // Fin Acción Semántica 18
           
-          // Acción Semántica 20
+          // Acción Semántica 19
           Mp.h = Mp1.h;
-          // Fin Acción Semántica 20
+          // Fin Acción Semántica 19
           
           Mp ( Mp );
         } else {
             // M' -> ϵ 
             
-            // Acción Semántica 21
+            // Acción Semántica 20
             Mp.lugar = Mp.h;
-            // Fin Acción Semántica 21
+            // Fin Acción Semántica 20
         }         
     }
     
@@ -531,7 +517,7 @@ public class GenCodigoInt {
             num = cmp.be.preAnalisis;
             emparejar ("num");
             
-            // Acción Semántica 23
+            // Acción Semántica 22
             p = cmp.ts.buscar ( num.lexema );
             
             if ( p != NIL ) {
@@ -539,14 +525,14 @@ public class GenCodigoInt {
             } else {
                 error ( "[F] Id redeclarado" );
             }
-            // Fin Acción Semántica 23
+            // Fin Acción Semántica 22
             
         } else if ( preAnalisis.equals("num.num")) {
             // F -> num.num
             num_num = cmp.be.preAnalisis;
             emparejar ("num.num");
             
-            // Acción Semántica 24
+            // Acción Semántica 23
             p = cmp.ts.buscar ( num_num.lexema );
             
             if ( p != NIL ) {
@@ -554,14 +540,14 @@ public class GenCodigoInt {
             } else {
                 error ( "[F] Id redeclarado" );
             }
-            // Fin Acción Semántica 24
+            // Fin Acción Semántica 23
             
         } else if ( preAnalisis.equals("id")) {
             // F -> id
             id = cmp.be.preAnalisis;
             emparejar("id");
             
-            // Acción Semántica 22
+            // Acción Semántica 21
             p = cmp.ts.buscar ( id.lexema );
             
             if ( p != NIL ) {
@@ -569,7 +555,7 @@ public class GenCodigoInt {
             } else {
                 error ( "[F] Id redeclarado" );
             }
-            // Fin Acción Semántica 22
+            // Fin Acción Semántica 21  
             
         } else if ( preAnalisis.equals("(") ) {
             // F -> ( E )
@@ -577,9 +563,9 @@ public class GenCodigoInt {
             E ( E );
             emparejar(")");
             
-            // Acción Semántica 25
+            // Acción Semántica 24
             F.lugar = E.lugar;
-            // Fin Acción Semántica 25
+            // Fin Acción Semántica 24
             
         } else {
             error("[F] Expresión mal formada. " +

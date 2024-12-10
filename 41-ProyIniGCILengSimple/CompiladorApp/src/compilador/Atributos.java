@@ -1,5 +1,7 @@
 package compilador;
 
+import java.util.ArrayList;
+
 public class Atributos {
     String lugar    = "";
     String comienzo = "";

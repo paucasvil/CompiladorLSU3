@@ -127,15 +127,22 @@ public class GenCodigoObj {
     private void algoritmoGCO () {       
         for(int i = 0; i < cmp.cua.getTamano(); i++){
             Cuadruplo cuas = cmp.cua.devolverCuadruplo(i);
-            System.out.println(cuas.op);
             String op = cuas.getOp();
-            cmp.iuListener.mostrarCodObj ( "mov ax, "+cuas.getArg1() );
-            if(cuas.getOp().equals("+")){
-                cmp.iuListener.mostrarCodObj ( "add ax, "+cuas.getArg2() );
-            }else if(cuas.getOp().equals("*")){
-                cmp.iuListener.mostrarCodObj ( "mul "+cuas.getArg2() );
+            if( op.equals("+") || op.equals("*")){
+                cmp.iuListener.mostrarCodObj( "  " +"; traduccion de " + cuas.getResultado() + 
+                    " := " +cuas.getArg1()+ " " + cuas.getOp() + " " + cuas.getArg2() );
+            }else if( op.equals( ":=" ) ) {
+                cmp.iuListener.mostrarCodObj( "  " +"; traduccion de " + cuas.getResultado() + 
+                    " := " +cuas.getArg1() );
             }
-            cmp.iuListener.mostrarCodObj ( "mov "+cuas.getResultado() +", ax");
+            
+            cmp.iuListener.mostrarCodObj ( "  " + "mov ax, " + cuas.getArg1() );
+            if(cuas.getOp().equals("+")){
+                cmp.iuListener.mostrarCodObj ( "  " + "add ax, " + cuas.getArg2() );
+            }else if(cuas.getOp().equals("*")){
+                cmp.iuListener.mostrarCodObj ( "  " + "mul " + cuas.getArg2() );
+            }
+            cmp.iuListener.mostrarCodObj ( "  " + "mov " + cuas.getResultado() + ", ax");
         }
     }
     
