@@ -85,11 +85,11 @@ public class GenCodigoObj {
         for ( int i = 1; i < cmp.ts.getTamaño (); i++ ) {
             // Por cada entrada en la Tabla de Simbolos...
             Linea_TS elemento = cmp.ts.obt_elemento( i );
-            String variable = elemento.getLexema();
+            String variable = elemento.getLexema();            
             
             // Genera una declaracion de variable solo si se trata de un id
             if ( elemento.getComplex().equals ( "id" ) ) 
-                cmp.iuListener.mostrarCodObj ( "  " + variable + " DW 0" );
+                cmp.iuListener.mostrarCodObj ( "  " + variable + " DW 0" );                       
         }
         cmp.iuListener.mostrarCodObj ( "" );
     }
@@ -140,7 +140,8 @@ public class GenCodigoObj {
             if(cuas.getOp().equals("+")){
                 cmp.iuListener.mostrarCodObj ( "  " + "add ax, " + cuas.getArg2() );
             }else if(cuas.getOp().equals("*")){
-                cmp.iuListener.mostrarCodObj ( "  " + "mul " + cuas.getArg2() );
+                cmp.iuListener.mostrarCodObj ( "  " + "mov bx, " + cuas.getArg2() );
+                cmp.iuListener.mostrarCodObj ( "  " + "mul bx" );
             }
             cmp.iuListener.mostrarCodObj ( "  " + "mov " + cuas.getResultado() + ", ax");
         }

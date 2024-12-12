@@ -3,6 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/pau_c/Documents/escuela/7mo%20semestre/Automatas/U3/41-ProyIniGCILengSimple/41-ProyIniGCILengSimple/CompiladorApp/src/compilador/GenCodigoObj.java</file>
+            <file>file:/C:/Users/pau_c/Documents/escuela/7mo%20semestre/Automatas/U3/41-ProyIniGCILengSimple/41-ProyIniGCILengSimple/CompiladorApp/src/compilador/GenCodigoInt.java</file>
+            <file>file:/C:/Users/pau_c/Documents/escuela/7mo%20semestre/Automatas/U3/41-ProyIniGCILengSimple/41-ProyIniGCILengSimple/CompiladorApp/src/compilador/Lexico.java</file>
+            <file>file:/C:/Users/pau_c/Documents/escuela/7mo%20semestre/Automatas/U3/41-ProyIniGCILengSimple/41-ProyIniGCILengSimple/CompiladorApp/src/compilador/Compilador.java</file>
+            <file>file:/C:/Users/pau_c/Documents/escuela/7mo%20semestre/Automatas/U3/41-ProyIniGCILengSimple/41-ProyIniGCILengSimple/CompiladorApp/src/compilador/TablaSimbolos.java</file>
+        </group>
     </open-files>
 </project-private>

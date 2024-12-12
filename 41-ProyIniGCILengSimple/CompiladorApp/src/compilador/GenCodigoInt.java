@@ -45,6 +45,7 @@
 package compilador;
 
 import general.Linea_BE;
+import general.Linea_TS;
 
 public class GenCodigoInt {
     public static final int NIL = 0;
@@ -151,6 +152,9 @@ public class GenCodigoInt {
             // P -> V C 
             V();
             C();
+            for(int i = 1; i <= consecTemp ; i++ ){                
+               cmp.ts.insertar(new Linea_TS("id","t"+i,"",""));
+            }
         } else {
             error ( "[P] Inicio incorrecto del programa. " +
                     "No. Linea " + cmp.be.preAnalisis.numLinea );
