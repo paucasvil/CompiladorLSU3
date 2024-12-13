@@ -134,13 +134,16 @@ public class GenCodigoObj {
             }else if( op.equals( ":=" ) ) {
                 cmp.iuListener.mostrarCodObj( "  " +"; traduccion de " + cuas.getResultado() + 
                     " := " +cuas.getArg1() );
+                cmp.iuListener.mostrarCodObj ( "  " + "mov ax, " + cuas.getArg1() );
             }
             
-            cmp.iuListener.mostrarCodObj ( "  " + "mov ax, " + cuas.getArg1() );
+            
             if(cuas.getOp().equals("+")){
+                cmp.iuListener.mostrarCodObj ( "  " + "mov ax, " + cuas.getArg1() );
                 cmp.iuListener.mostrarCodObj ( "  " + "add ax, " + cuas.getArg2() );
             }else if(cuas.getOp().equals("*")){
                 cmp.iuListener.mostrarCodObj ( "  " + "mov bx, " + cuas.getArg2() );
+                cmp.iuListener.mostrarCodObj ( "  " + "mov ax, " + cuas.getArg1() );
                 cmp.iuListener.mostrarCodObj ( "  " + "mul bx" );
             }
             cmp.iuListener.mostrarCodObj ( "  " + "mov " + cuas.getResultado() + ", ax");
